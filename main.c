@@ -2,18 +2,18 @@
 #include <assert.h>
 
 typedef char *string;
-typedef struct statement_t *statement;
-typedef struct expression_t *expression;
-typedef struct expression_list_t *expression_list;
+typedef struct tgr_statement_t *tgr_statement;
+typedef struct tgr_expression_t *tgr_expression;
+typedef struct tgr_expression_list_t *tgr_expression_list;
 typedef enum
 {
-    plus,
-    minus,
-    times,
-    divide
-} binary_operation;
+    tgr_plus,
+    tgr_minus,
+    tgr_times,
+    tgr_divide
+} tgr_binary_operation;
 
-struct statement_t
+struct tgr_statement_t
 {
     enum
     {
@@ -25,16 +25,16 @@ struct statement_t
     {
         struct
         {
-            statement first, second;
+            tgr_statement first, second;
         } compound;
         struct
         {
             string id;
-            expression exp;
+            tgr_expression exp;
         } assign;
         struct
         {
-            expression_list exps;
+            tgr_expression_list exps;
         } print;
     } data;
 };
@@ -46,33 +46,33 @@ void *checked_malloc(int length)
     return p;
 }
 
-statement create_compound_statement(statement first, statement second)
+tgr_statement tgr_create_compound_statement(tgr_statement first, tgr_statement second)
 {
-    statement result = checked_malloc(sizeof(*result));
+    tgr_statement result = checked_malloc(sizeof(*result));
     result->kind = compound_statement;
     result->data.compound.first = first;
     result->data.compound.second = second;
     return result;
 }
 
-statement create_assignment_statement(string id, expression exp)
+tgr_statement tgr_create_assignment_statement(string id, tgr_expression exp)
 {
-    statement result = checked_malloc(sizeof(*result));
+    tgr_statement result = checked_malloc(sizeof(*result));
     result->kind = assignment_statement;
     result->data.assign.id = id;
     result->data.assign.exp = exp;
     return result;
 }
 
-statement create_print_statement(expression_list exps)
+tgr_statement tgr_create_print_statement(tgr_expression_list exps)
 {
-    statement result = checked_malloc(sizeof(*result));
+    tgr_statement result = checked_malloc(sizeof(*result));
     result->kind = print_statement;
     result->data.print.exps = exps;
     return result;
 }
 
-struct expression_t
+struct tgr_expression_t
 {
     enum
     {
@@ -87,37 +87,37 @@ struct expression_t
         int num;
         struct
         {
-            expression left;
-            binary_operation op;
-            expression right;
+            tgr_expression left;
+            tgr_binary_operation op;
+            tgr_expression right;
         } op;
         struct
         {
-            statement stm;
-            expression exp;
+            tgr_statement stm;
+            tgr_expression exp;
         } eseq;
     } data;
 };
 
-expression create_id_expression(string id)
+tgr_expression tgr_create_id_expression(string id)
 {
-    expression result = checked_malloc(sizeof(*result));
+    tgr_expression result = checked_malloc(sizeof(*result));
     result->kind = id_expression;
     result->data.id = id;
     return result;
 }
 
-expression create_numeric_expression(int num)
+tgr_expression tgr_create_numeric_expression(int num)
 {
-    expression result = checked_malloc(sizeof(*result));
+    tgr_expression result = checked_malloc(sizeof(*result));
     result->kind = numeric_expression;
     result->data.num = num;
     return result;
 }
 
-expression create_operator_expression(expression left, binary_operation op, expression right)
+tgr_expression tgr_create_operator_expression(tgr_expression left, tgr_binary_operation op, tgr_expression right)
 {
-    expression result = checked_malloc(sizeof(*result));
+    tgr_expression result = checked_malloc(sizeof(*result));
     result->kind = operator_expression;
     result->data.op.left = left;
     result->data.op.op = op;
@@ -125,15 +125,15 @@ expression create_operator_expression(expression left, binary_operation op, expr
     return result;
 }
 
-expression create_expression_sequence_expression(statement stm, expression exp) {
-    expression result = checked_malloc(sizeof(*result));
+tgr_expression tgr_create_expression_sequence_expression(tgr_statement stm, tgr_expression exp) {
+    tgr_expression result = checked_malloc(sizeof(*result));
     result->kind = expression_sequence_expression;
     result->data.eseq.stm = stm;
     result->data.eseq.exp = exp;
     return result;
 }
 
-struct expression_list_t
+struct tgr_expression_list_t
 {
     enum
     {
@@ -144,10 +144,10 @@ struct expression_list_t
     {
         struct
         {
-            expression head;
-            expression tail;
+            tgr_expression head;
+            tgr_expression tail;
         } pair;
-        expression last;
+        tgr_expression last;
     } data;
 };
 
