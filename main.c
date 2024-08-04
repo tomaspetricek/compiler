@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <assert.h>
+#include "util.h"
 
-typedef char *string;
 typedef struct tgr_statement_t *tgr_statement;
 typedef struct tgr_expression_t *tgr_expression;
 typedef struct tgr_expression_list_t *tgr_expression_list;
